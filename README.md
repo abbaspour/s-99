@@ -1,4 +1,3 @@
-s-99
-====
-
-p-99 problems in scala (http://aperiodic.net/phil/scala/s-99/)
+my solution to problems at: http://aperiodic.net/phil/scala/s-99/
+compatible with Scala 2.10.1
+this is work-in-progress.
