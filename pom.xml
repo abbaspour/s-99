@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.bitbucket.amin</groupId>
-    <artifactId>scala-test-s99</artifactId>
+    <artifactId>s-99</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>S-99 Problems at http://aperiodic.net/phil/scala/s-99/</name>
