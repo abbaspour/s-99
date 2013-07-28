@@ -5,7 +5,6 @@ import scala.NoSuchElementException
 import scala.collection.immutable.Range
 import scala.annotation.tailrec
 
-// todo: rewrite prime number generation
 class S99Int(val start: Int) {
 
   def isCoprimeTo(n : Int) : Boolean = P32.gcd(start, n) == 1
@@ -30,7 +29,7 @@ class S99Int(val start: Int) {
       else if(n % p == 0) primeFactorsR2(n / p, p, pItr, p :: result)
       else primeFactorsR2(n, pItr.next(), pItr, result)
 
-    val pItr = S99Int.primes.iterator
+    val pItr = S99Int.primesStream.iterator
     primeFactorsR2(n, pItr.next(), pItr, Nil).reverse
   }
 
@@ -47,7 +46,7 @@ class S99Int(val start: Int) {
         primeFactorMultiplicityR(n, pItr.next(), pItr, result)
     }
 
-    val pItr = S99Int.primes.iterator
+    val pItr = S99Int.primesStream.iterator
     primeFactorMultiplicityR(n, pItr.next(), pItr, Map())
   }
 
@@ -68,48 +67,26 @@ class S99Int(val start: Int) {
     goldbachR(S99Int.listPrimesInRange(2 to start), Nil)
   }
 
-  def isPrimeSimple: Boolean = {
-    val sqrt: Int = Math.sqrt(start).toInt
-    for (i <- 2 to sqrt)
-      if (start % i == 0)
-        return false
-    true
-  }
-
-  // todo: rewrite
-  def isPrime: Boolean = {
-    (start > 1) &&
-      S99Int.primes.takeWhile(_ <= Math.sqrt(start)).forall(start % _ != 0)
-  }
-
+  def isPrime: Boolean = S99Int.isPrime(start)
 
 }
 
 object S99Int {
   implicit def int2S99Int(i: Int): S99Int = new S99Int(i)
 
-  // todo: optimal?
-  def listPrimesInRange(r : Range) : List[Int] = {
-    val rprimes = S99Int.primes dropWhile { _ < r.start } takeWhile { _ <= r.last }
-    rprimes.toList
-  }
+  def listPrimesInRange(r : Range) : List[Int] = (primesStream dropWhile { _ < r.start } takeWhile { _ <= r.last }).toList
 
-
-  val primes = Stream.cons(2, Stream.from(3, 2)).filter(_.isPrimeSimple)
-}
-
-object Prime {
-  def is(i: Long) =
+  def isPrime(i: Int) =
     if (i == 2) true
-    else if ((i & 1) == 0) false // efficient div by 2
-    else prime(i)
+    else if ((i & 1) == 0) false // efficient div by 2, @jedws
+    else primeCheckStream(i)
 
-  def primes: Stream[Long] = 2 #:: prime3
+  def primesStream: Stream[Int] = 2 #:: primesGenerator
 
-  // performance: avoid redundant divide by two, so this starts at 3
-  private val prime3: Stream[Long] = {
-    def next(i: Long): Stream[Long] =
-      if (prime(i))
+  // performance: avoid redundant divide by two (handled by isPrime), so this starts at 3
+  private val primesGenerator: Stream[Int] = {
+    def next(i: Int): Stream[Int] =
+      if (primeCheckStream(i))
         i #:: next(i + 2)
       else
         next(i + 2) // tail
@@ -117,7 +94,7 @@ object Prime {
   }
 
   // assumes not even, check evenness before calling - perf note: must pass partially applied >= method
-  private def prime(i: Long) =
-    primes takeWhile (math.sqrt(i).>= _) forall { i % _ != 0 }
+  private def primeCheckStream(i: Int) =
+    primesStream takeWhile (math.sqrt(i).>= _) forall { i % _ != 0 }
 }
 

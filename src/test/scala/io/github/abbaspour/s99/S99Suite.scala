@@ -207,22 +207,18 @@ class S99Suite extends FunSuite {
 
   test("31,1") {
     assert(
-      91.isPrimeSimple === false
+      91.isPrime === false
     )
-  }
-
-  test("31,2") {
-    assert(Prime.is(7))
   }
 
   test("31,3") {
     assert(
-      91.isPrimeSimple === false
+      91.isPrime === false
     )
   }
 
   test("31,4") {
-    assert(25.isPrimeSimple === false)
+    assert(25.isPrime === false)
   }
 
   test("32") {
@@ -704,6 +700,7 @@ class S99Suite extends FunSuite {
     assert(r.size === 92)
   }
 
+  // todo: impl 92 .. 99
   test("92") {
     val g = Graph.fromString("[a-b, b-c, c-d]")
     //g.vonKoch
